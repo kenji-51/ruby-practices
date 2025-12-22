@@ -8,9 +8,10 @@ shots = scores.flat_map do |run|
 end
 
 frames = shots.each_slice(2).to_a
-point = 0
 
-frames.each_with_index do |frame, index|
+points = frames.each_with_index.sum do |frame, index|
+
+frames.each_with_index.sum do |frame, index|
   point += case index
            when 0..8
              if frames[index][0] == 10
