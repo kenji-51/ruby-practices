@@ -10,24 +10,21 @@ end
 frames = shots.each_slice(2).to_a
 
 points = frames.each_with_index.sum do |frame, index|
+  frame_point = 0
+  frame_point += frame.sum
 
-frames.each_with_index.sum do |frame, index|
-  point += case index
-           when 0..8
-             if frames[index][0] == 10
-               if frames[index + 1][0] == 10
-                 10 + frames[index + 1][0] + frames[index + 2][0]
-               else
-                 10 + frames[index + 1].sum
-               end
-             elsif frame.sum == 10
-               10 + frames[index + 1][0]
-             else
-               frames[index].sum
-             end
-           else
-             frame.sum
-           end
+  if index <= 8
+    if frames[index][0] == 10
+      frame_point += if frames[index + 1][0] == 10
+                       frames[index + 1][0] + frames[index + 2][0]
+                     else
+                       frames[index + 1].sum
+                     end
+    elsif frame.sum == 10
+      frame_point += frames[index + 1][0]
+    end
+  end
+  frame_point
 end
 
-puts point
+p points
