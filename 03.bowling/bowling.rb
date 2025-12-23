@@ -25,4 +25,4 @@ points = frames.each_with_index.sum do |frame, index|
   frame_point
 end
 
-p points
+puts points
