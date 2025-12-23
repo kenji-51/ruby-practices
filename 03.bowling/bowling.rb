@@ -10,8 +10,7 @@ end
 frames = shots.each_slice(2).to_a
 
 points = frames.each_with_index.sum do |frame, index|
-  frame_point = 0
-  frame_point += frame.sum
+  frame_point = frame.sum
 
   if index <= 8
     if frames[index][0] == 10
