@@ -13,7 +13,7 @@ points = frames.each_with_index.sum do |frame, index|
   frame_point = frame.sum
 
   if index <= 8
-    frame_point += frames[index + 1][0] if frames[index][0] == 10 || frames[index].sum == 10
+    frame_point += frames[index + 1][0] if frames[index].sum == 10
     if frames[index][0] == 10
       frame_point += if frames[index + 1][0] == 10
                        frames[index + 2][0]
