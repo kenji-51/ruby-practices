@@ -44,8 +44,8 @@ def display_result(double_arr, max_width)
 end
 
 files = show_current_dirs
-cols = 3
+COLS = 3
 
-double_arr = make_double_array(files, cols)
+double_arr = make_double_array(files, COLS)
 max_width = make_max_width(double_arr)
 display_result(double_arr, max_width)
