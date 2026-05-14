@@ -24,10 +24,11 @@ def make_max_width(double_arr)
   max_width = 0
 
   double_arr.each do |row|
-    file = row[0]
-    next if file.nil?
+    row.each do |file|
+      next if file.nil?
 
-    max_width = file.length if file.length > max_width
+      max_width = file.length if file.length > max_width
+    end
   end
 
   max_width
