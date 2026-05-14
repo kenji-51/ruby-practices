@@ -30,10 +30,11 @@ def make_max_width(file_names)
   max_width
 end
 
-def display_result(double_arr, max_width)
-  double_arr.each do |row|
+def display_file_names(file_names, max_width)
+  file_names.each do |row|
     row.each do |file|
       file = '' if file.nil?
+
       print file.ljust(max_width + 3)
     end
     puts
@@ -45,4 +46,4 @@ COLS = 3
 
 file_names = build_file_names(FILES, COLS)
 max_width = make_max_width(file_names)
-display_result(file_names, max_width)
+display_file_names(file_names, max_width)
