@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
-def make_double_array(files, cols)
+def build_file_names(files, cols)
   number_of_files = files.length
   rows = (number_of_files.to_f / cols).ceil
 
-  double_arr = Array.new(rows) { Array.new(cols) }
+  nested_array = Array.new(rows) { Array.new(cols) }
 
   rows.times do |row|
     cols.times do |col|
       idx = (rows * col) + row
-      double_arr[row][col] = files[idx]
+      nested_array[row][col] = files[idx]
     end
   end
 
-  double_arr
+  nested_array
 end
 
-def make_max_width(double_arr)
+def make_max_width(file_names)
   max_width = 0
 
-  double_arr.each do |row|
+  file_names.each do |row|
     row.each do |file|
       next if file.nil?
 
@@ -43,6 +43,6 @@ end
 FILES = Dir.glob('*')
 COLS = 3
 
-double_arr = make_double_array(FILES, COLS)
-max_width = make_max_width(double_arr)
-display_result(double_arr, max_width)
+file_names = build_file_names(FILES, COLS)
+max_width = make_max_width(file_names)
+display_result(file_names, max_width)
