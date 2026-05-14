@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-def show_current_dirs
-  Dir.glob('*')
-end
-
 def make_double_array(files, cols)
   number_of_files = files.length
   rows = (number_of_files.to_f / cols).ceil
@@ -44,9 +40,9 @@ def display_result(double_arr, max_width)
   end
 end
 
-files = show_current_dirs
+FILES = Dir.glob('*')
 COLS = 3
 
-double_arr = make_double_array(files, COLS)
+double_arr = make_double_array(FILES, COLS)
 max_width = make_max_width(double_arr)
 display_result(double_arr, max_width)
