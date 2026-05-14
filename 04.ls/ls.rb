@@ -36,9 +36,9 @@ end
 
 def display_result(double_arr, max_width)
   double_arr.each do |row|
-    row.each_with_index do |file, col|
+    row.each do |file|
       file = '' if file.nil?
-      print col.zero? ? file.ljust(max_width + 3) : file.ljust(20)
+      print file.ljust(max_width + 3)
     end
     puts
   end
