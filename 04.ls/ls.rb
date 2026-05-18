@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+FILES = Dir.glob('*')
+COLS = 3
+
 def build_file_names(files, cols)
   number_of_files = files.length
   rows = (number_of_files.to_f / cols).ceil
@@ -40,9 +43,6 @@ def display_file_names(file_names, max_width)
     puts
   end
 end
-
-FILES = Dir.glob('*')
-COLS = 3
 
 file_names = build_file_names(FILES, COLS)
 max_width = make_max_width(file_names)
