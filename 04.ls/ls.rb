@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FILES = Dir.glob('*')
+FILES = Dir.glob('*', File::FNM_DOTMATCH)
 COLS = 3
 
 def build_file_names(files, cols)
