@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
-FILES = ARGV.include?('-a') ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+require 'optparse'
+
 COLS = 3
+
+all_cmd = false
+
+OptionParser.new do |opt|
+  opt.on('-a') { all_cmd = true }
+  opt.parse(ARGV)
+end
+
+files = all_cmd ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
 
 def build_file_names(files, cols)
   number_of_files = files.length
@@ -44,6 +54,6 @@ def display_file_names(file_names, max_width)
   end
 end
 
-file_names = build_file_names(FILES, COLS)
+file_names = build_file_names(files, COLS)
 max_width = make_max_width(file_names)
 display_file_names(file_names, max_width)
