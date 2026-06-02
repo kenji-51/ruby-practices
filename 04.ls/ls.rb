@@ -11,7 +11,7 @@ OptionParser.new do |opt|
   opt.parse(ARGV)
 end
 
-files = all_cmd ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+files = Dir.glob('*', all_cmd ? File::FNM_DOTMATCH : 0)
 
 def build_file_names(files, cols)
   number_of_files = files.length
