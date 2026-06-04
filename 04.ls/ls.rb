@@ -4,14 +4,15 @@ require 'optparse'
 
 COLS = 3
 
-all_cmd = false
+reverse_cmd = false
 
 OptionParser.new do |opt|
-  opt.on('-a') { all_cmd = true }
+  opt.on('-r') { reverse_cmd = true }
   opt.parse(ARGV)
 end
 
-files = Dir.glob('*', all_cmd ? File::FNM_DOTMATCH : 0)
+files = Dir.glob('*')
+files = files.reverse if reverse_cmd
 
 def build_file_names(files, cols)
   number_of_files = files.length
