@@ -72,7 +72,10 @@ if list_cmd
     '7' => 'rwx'
   }
 
+  max_hardlink_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
   max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
+  max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
+  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
 
   file_lists = files.map do |file|
     stat = File.stat(file)
@@ -86,12 +89,13 @@ if list_cmd
 
     file_mode_structure = file_type + file_mode
 
-    hardlink = stat.nlink
-    user = Etc.getpwuid(stat.uid).name
-    group = Etc.getgrgid(stat.gid).name
+    hardlink = stat.nlink.to_s.rjust(max_hardlink_width)
+    user = Etc.getpwuid(stat.uid).name.rjust(max_user_width)
+    group = Etc.getgrgid(stat.gid).name.rjust(max_group_width)
     file_size = stat.size.to_s.rjust(max_size_width)
-    update_file_day = stat.mtime.strftime('%m月 %d %H:%M')
-    [file_mode_structure, hardlink, user, group, file_size, update_file_day, file].join('  ')
+    update_file_day = stat.mtime.strftime('%-b %e %H:%M')
+
+    [file_mode_structure, hardlink, user, group, file_size, update_file_day, file].join(' ')
   end
 
   blocks = files.map do |file|
