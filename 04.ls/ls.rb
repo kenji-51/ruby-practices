@@ -77,9 +77,12 @@ if list_cmd
   max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
   max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
 
+  total_blocks = 0
+
   file_lists = files.map do |file|
     stat = File.stat(file)
     mode = stat.mode.to_s(8)
+    total_blocks += stat.blocks
 
     object_type = mode.chars.first
     file_type = file_type_hash[object_type]
@@ -98,12 +101,7 @@ if list_cmd
     [file_mode_structure, hardlink, user, group, file_size, update_file_day, file].join(' ')
   end
 
-  blocks = files.map do |file|
-    File.stat(file).blocks
-  end
-
-  print 'total '
-  puts blocks.sum
+  puts "total #{total_blocks}"
   puts file_lists
 else
   file_names = build_file_names(files, COLS)
