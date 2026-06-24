@@ -75,8 +75,8 @@ if list_cmd
   max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
 
   file_lists = files.map do |file|
-    status = File.stat(file)
-    mode = status.mode.to_s(8)
+    stat = File.stat(file)
+    mode = stat.mode.to_s(8)
 
     object_type = mode.chars.first
     file_type = file_type_hash[object_type]
@@ -86,20 +86,20 @@ if list_cmd
 
     file_mode_structure = file_type + file_mode
 
-    hardlinks = status.nlink
-    user = Etc.getpwuid(status.uid).name
-    group = Etc.getgrgid(status.gid).name
-    file_size = status.size.to_s.rjust(max_size_width)
-    update_file_day = status.mtime.strftime('%m月 %d %H:%M')
-    [file_mode_structure, hardlinks, user, group, file_size, update_file_day, file].join('  ')
+    hardlink = stat.nlink
+    user = Etc.getpwuid(stat.uid).name
+    group = Etc.getgrgid(stat.gid).name
+    file_size = stat.size.to_s.rjust(max_size_width)
+    update_file_day = stat.mtime.strftime('%m月 %d %H:%M')
+    [file_mode_structure, hardlink, user, group, file_size, update_file_day, file].join('  ')
   end
 
-  block = files.map do |file|
+  blocks = files.map do |file|
     File.stat(file).blocks
   end
 
   print 'total '
-  puts block.sum
+  puts blocks.sum
   puts file_lists
 else
   file_names = build_file_names(files, COLS)
