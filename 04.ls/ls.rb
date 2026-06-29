@@ -104,7 +104,7 @@ def make_file_size(stat, files)
 end
 
 def make_update_file_day(stat)
-  stat.mtime.strftime('%-b %e %H:%M')
+  stat.mtime.strftime('%-m月 %e %H:%M')
 end
 
 def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
