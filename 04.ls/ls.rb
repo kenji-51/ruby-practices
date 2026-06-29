@@ -74,7 +74,6 @@ if list_cmd
   }
 
   max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
-  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
 
   total_blocks = 0
 
@@ -100,15 +99,19 @@ if list_cmd
     Etc.getpwuid(stat.uid).name.rjust(max_user_width)
   end
 
+  def make_group(stat, files)
+    max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
+    Etc.getgrgid(stat.gid).name.rjust(max_group_width)
+  end
+
   file_lists = files.map do |file|
     stat = File.stat(file)
     total_blocks += stat.blocks
 
-    group = Etc.getgrgid(stat.gid).name.rjust(max_group_width)
     file_size = stat.size.to_s.rjust(max_size_width)
     update_file_day = stat.mtime.strftime('%-b %e %H:%M')
 
-    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), group, file_size, update_file_day,
+    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), make_group(stat, files), file_size, update_file_day,
      file].join(' ')
   end
 
