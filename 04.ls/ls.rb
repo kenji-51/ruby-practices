@@ -73,8 +73,6 @@ if list_cmd
     '7' => 'rwx'
   }
 
-  max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
-
   total_blocks = 0
 
   def make_file_mode_structure(stat, file_type_hash, permission_hash)
@@ -104,14 +102,18 @@ if list_cmd
     Etc.getgrgid(stat.gid).name.rjust(max_group_width)
   end
 
+  def make_file_size(stat, files)
+    max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
+    stat.size.to_s.rjust(max_size_width)
+  end
+
   file_lists = files.map do |file|
     stat = File.stat(file)
     total_blocks += stat.blocks
 
-    file_size = stat.size.to_s.rjust(max_size_width)
     update_file_day = stat.mtime.strftime('%-b %e %H:%M')
 
-    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), make_group(stat, files), file_size, update_file_day,
+    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), make_group(stat, files), make_file_size(stat, files), update_file_day,
      file].join(' ')
   end
 
