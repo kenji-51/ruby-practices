@@ -55,6 +55,7 @@ def display_file_names(file_names, max_width)
   end
 end
 
+# メソッド
 if list_cmd
   file_type_hash = {
     '1' => '-',
@@ -79,10 +80,8 @@ if list_cmd
 
   total_blocks = 0
 
-  file_lists = files.map do |file|
-    stat = File.stat(file)
+  def make_file_mode_structure(stat, file_type_hash, permission_hash)
     mode = stat.mode.to_s(8)
-    total_blocks += stat.blocks
 
     object_type = mode.chars.first
     file_type = file_type_hash[object_type]
@@ -90,7 +89,12 @@ if list_cmd
     file_permission = mode.chars.last(3)
     file_mode = file_permission.map { |file_per| permission_hash[file_per] }.join('')
 
-    file_mode_structure = file_type + file_mode
+    file_type + file_mode
+  end
+
+  file_lists = files.map do |file|
+    stat = File.stat(file)
+    total_blocks += stat.blocks
 
     hardlink = stat.nlink.to_s.rjust(max_hardlink_width)
     user = Etc.getpwuid(stat.uid).name.rjust(max_user_width)
@@ -98,7 +102,7 @@ if list_cmd
     file_size = stat.size.to_s.rjust(max_size_width)
     update_file_day = stat.mtime.strftime('%-b %e %H:%M')
 
-    [file_mode_structure, hardlink, user, group, file_size, update_file_day, file].join(' ')
+    [make_file_mode_structure(stat, file_type_hash, permission_hash), hardlink, user, group, file_size, update_file_day, file].join(' ')
   end
 
   puts "total #{total_blocks}"
