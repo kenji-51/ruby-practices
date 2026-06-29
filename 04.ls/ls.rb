@@ -107,13 +107,15 @@ if list_cmd
     stat.size.to_s.rjust(max_size_width)
   end
 
+  def make_update_file_day(stat)
+    stat.mtime.strftime('%-b %e %H:%M')
+  end
+
   file_lists = files.map do |file|
     stat = File.stat(file)
     total_blocks += stat.blocks
 
-    update_file_day = stat.mtime.strftime('%-b %e %H:%M')
-
-    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), make_group(stat, files), make_file_size(stat, files), update_file_day,
+    [make_file_mode_structure(stat, file_type_hash, permission_hash), make_hardlinks(stat, files), make_user(stat, files), make_group(stat, files), make_file_size(stat, files), make_update_file_day(stat),
      file].join(' ')
   end
 
