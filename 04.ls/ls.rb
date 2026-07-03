@@ -7,12 +7,12 @@ COLS = 3
 
 list_cmd = false
 
-file_type_hash = {
+FILE_TYPE_HASH = {
   '1' => '-',
   '4' => 'd'
 }
 
-permission_hash = {
+PERMISSION_HASH = {
   '0' => '---',
   '1' => '--x',
   '2' => '-w-',
@@ -129,7 +129,7 @@ def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
 end
 
 if list_cmd
-  execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
+  execute_file_list_and_total_blocks(files, FILE_TYPE_HASH, PERMISSION_HASH)
 else
   file_names = build_file_names(files, COLS)
   max_width = make_max_width(file_names)
