@@ -8,7 +8,7 @@ COLS = 3
 FILE_TYPE_HASH = {
   '1' => '-',
   '4' => 'd'
-}
+}.freeze
 
 PERMISSION_HASH = {
   '0' => '---',
@@ -19,7 +19,7 @@ PERMISSION_HASH = {
   '5' => 'r-x',
   '6' => 'rw-',
   '7' => 'rwx'
-}
+}.freeze
 
 def main
   list_cmd = false
