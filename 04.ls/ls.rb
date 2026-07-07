@@ -83,23 +83,19 @@ def make_file_mode_structure(stat, file_type_hash, permission_hash)
   file_type + file_mode
 end
 
-def make_hardlinks(stat, files)
-  max_hardlink_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
-  stat.nlink.to_s.rjust(max_hardlink_width)
+def make_hardlinks(stat, max_hardlinks_width)
+  stat.nlink.to_s.rjust(max_hardlinks_width)
 end
 
-def make_user(stat, files)
-  max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
+def make_user(stat, max_user_width)
   Etc.getpwuid(stat.uid).name.rjust(max_user_width)
 end
 
-def make_group(stat, files)
-  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
+def make_group(stat, max_group_width)
   Etc.getgrgid(stat.gid).name.rjust(max_group_width)
 end
 
-def make_file_size(stat, files)
-  max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
+def make_file_size(stat, max_size_width)
   stat.size.to_s.rjust(max_size_width)
 end
 
@@ -108,6 +104,10 @@ def make_update_file_day(stat)
 end
 
 def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
+  max_hardlinks_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
+  max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
+  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
+  max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
   total_blocks = 0
 
   file_lists = files.map do |file|
@@ -116,10 +116,10 @@ def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
 
     [
       make_file_mode_structure(stat, file_type_hash, permission_hash),
-      make_hardlinks(stat, files),
-      make_user(stat, files),
-      make_group(stat, files),
-      make_file_size(stat, files),
+      make_hardlinks(stat, max_hardlinks_width),
+      make_user(stat, max_user_width),
+      make_group(stat, max_group_width),
+      make_file_size(stat, max_size_width),
       make_update_file_day(stat),
       file
     ].join(' ')
