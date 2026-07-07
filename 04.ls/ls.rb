@@ -5,8 +5,6 @@ require 'etc'
 
 COLS = 3
 
-list_cmd = false
-
 FILE_TYPE_HASH = {
   '1' => '-',
   '4' => 'd'
@@ -23,12 +21,22 @@ PERMISSION_HASH = {
   '7' => 'rwx'
 }
 
-OptionParser.new do |opt|
-  opt.on('-l') { list_cmd = true }
-  opt.parse(ARGV)
-end
+def main
+  list_cmd = false
+  OptionParser.new do |opt|
+    opt.on('-l') { list_cmd = true }
+    opt.parse(ARGV)
+  end
 
-files = Dir.glob('*')
+  files = Dir.glob('*')
+  if list_cmd
+    execute_file_list_and_total_blocks(files, FILE_TYPE_HASH, PERMISSION_HASH)
+  else
+    file_names = build_file_names(files, COLS)
+    max_width = make_max_width(file_names)
+    display_file_names(file_names, max_width)
+  end
+end
 
 def build_file_names(files, cols)
   number_of_files = files.length
@@ -128,10 +136,4 @@ def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
   puts file_lists
 end
 
-if list_cmd
-  execute_file_list_and_total_blocks(files, FILE_TYPE_HASH, PERMISSION_HASH)
-else
-  file_names = build_file_names(files, COLS)
-  max_width = make_max_width(file_names)
-  display_file_names(file_names, max_width)
-end
+main
