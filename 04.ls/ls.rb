@@ -32,9 +32,7 @@ def main
   if list_cmd
     display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH)
   else
-    file_names = build_file_names(files, COLS)
-    max_width = make_max_width(file_names)
-    display_file_names(file_names, max_width)
+    display_normal_format(files, COLS)
   end
 end
 
@@ -77,6 +75,12 @@ def display_file_names(file_names, max_width)
     end
     puts
   end
+end
+
+def display_normal_format(files, cols)
+  file_names = build_file_names(files, cols)
+  max_width = make_max_width(file_names)
+  display_file_names(file_names, max_width)
 end
 
 def make_file_mode_structure(stat, file_type_hash, permission_hash)
