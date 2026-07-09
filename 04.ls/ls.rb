@@ -30,7 +30,7 @@ def main
 
   files = Dir.glob('*')
   if list_cmd
-    execute_file_list_and_total_blocks(files, FILE_TYPE_HASH, PERMISSION_HASH)
+    display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH)
   else
     file_names = build_file_names(files, COLS)
     max_width = make_max_width(file_names)
@@ -91,7 +91,7 @@ def make_file_mode_structure(stat, file_type_hash, permission_hash)
   file_type + file_mode
 end
 
-def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
+def display_detailed_format(files, file_type_hash, permission_hash)
   max_hardlinks_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
   max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
   max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
