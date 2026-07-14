@@ -23,12 +23,18 @@ PERMISSION_HASH = {
 
 def main
   list_cmd = false
+  all_cmd = false
+  reverse_cmd = false
   OptionParser.new do |opt|
     opt.on('-l') { list_cmd = true }
+    opt.on('-a') { all_cmd = true }
+    opt.on('-r') { reverse_cmd = true }
     opt.parse(ARGV)
   end
 
-  files = Dir.glob('*')
+  files = Dir.glob('*', all_cmd ? File::FNM_DOTMATCH : 0)
+  files = files.reverse if reverse_cmd
+
   if list_cmd
     display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH)
   else
