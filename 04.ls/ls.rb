@@ -98,32 +98,31 @@ def make_file_mode_structure(stat, file_type_hash, permission_hash)
   file_type + file_mode
 end
 
-def display_detailed_format(files, file_type_hash, permission_hash)
-  max_hardlinks_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
-  max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
-  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
-  max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
+def calculate_max_width(files)
+  {
+    max_hardlinks_width: files.map { |file| File.stat(file).nlink.to_s.length }.max,
+    max_user_width: files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max,
+    max_group_width: files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max,
+    max_size_width: files.map { |file| File.stat(file).size.to_s.length }.max
+  }
+end
 
+def display_detailed_format(files, file_type_hash, permission_hash)
+  widths = calculate_max_width(files)
   total_blocks = 0
 
   file_lists = files.map do |file|
     stat = File.stat(file)
     total_blocks += stat.blocks
 
-    hardlinks = stat.nlink.to_s.rjust(max_hardlinks_width)
-    user = Etc.getpwuid(stat.uid).name.rjust(max_user_width)
-    group = Etc.getgrgid(stat.gid).name.rjust(max_group_width)
-    file_size = stat.size.to_s.rjust(max_size_width)
+    hardlinks = stat.nlink.to_s.rjust(widths[:max_hardlinks_width])
+    user = Etc.getpwuid(stat.uid).name.rjust(widths[:max_user_width])
+    group = Etc.getgrgid(stat.gid).name.rjust(widths[:max_group_width])
+    file_size = stat.size.to_s.rjust(widths[:max_size_width])
     update_file_day = stat.mtime.strftime('%-m月 %e %H:%M')
 
     [
-      make_file_mode_structure(stat, file_type_hash, permission_hash),
-      hardlinks,
-      user,
-      group,
-      file_size,
-      update_file_day,
-      file
+      make_file_mode_structure(stat, file_type_hash, permission_hash), hardlinks, user, group, file_size, update_file_day, file
     ].join(' ')
   end
   puts "total #{total_blocks}"
