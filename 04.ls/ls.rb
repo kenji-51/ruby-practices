@@ -36,11 +36,7 @@ def main
   files = Dir.glob('*', glob_options)
   files = files.reverse if reverse_cmd
 
-  if list_cmd
-    display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH)
-  else
-    display_normal_format(files, COLS)
-  end
+  list_cmd ? display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH) : display_normal_format(files, COLS)
 end
 
 def build_file_names(files, cols)
