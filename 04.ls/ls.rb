@@ -32,7 +32,8 @@ def main
     opt.parse(ARGV)
   end
 
-  files = Dir.glob('*', all_cmd ? File::FNM_DOTMATCH : 0)
+  glob_options = all_cmd ? File::FNM_DOTMATCH : 0
+  files = Dir.glob('*', glob_options)
   files = files.reverse if reverse_cmd
 
   if list_cmd
