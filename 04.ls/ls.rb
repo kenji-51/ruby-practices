@@ -23,19 +23,20 @@ PERMISSION_HASH = {
 
 def main
   list_cmd = false
+  all_cmd = false
+  reverse_cmd = false
   OptionParser.new do |opt|
     opt.on('-l') { list_cmd = true }
+    opt.on('-a') { all_cmd = true }
+    opt.on('-r') { reverse_cmd = true }
     opt.parse(ARGV)
   end
 
-  files = Dir.glob('*')
-  if list_cmd
-    execute_file_list_and_total_blocks(files, FILE_TYPE_HASH, PERMISSION_HASH)
-  else
-    file_names = build_file_names(files, COLS)
-    max_width = make_max_width(file_names)
-    display_file_names(file_names, max_width)
-  end
+  glob_options = all_cmd ? File::FNM_DOTMATCH : 0
+  files = Dir.glob('*', glob_options)
+  files = files.reverse if reverse_cmd
+
+  list_cmd ? display_detailed_format(files, FILE_TYPE_HASH, PERMISSION_HASH) : display_normal_format(files, COLS)
 end
 
 def build_file_names(files, cols)
@@ -79,6 +80,12 @@ def display_file_names(file_names, max_width)
   end
 end
 
+def display_normal_format(files, cols)
+  file_names = build_file_names(files, cols)
+  max_width = make_max_width(file_names)
+  display_file_names(file_names, max_width)
+end
+
 def make_file_mode_structure(stat, file_type_hash, permission_hash)
   mode = stat.mode.to_s(8)
 
@@ -91,45 +98,31 @@ def make_file_mode_structure(stat, file_type_hash, permission_hash)
   file_type + file_mode
 end
 
-def make_hardlinks(stat, max_hardlinks_width)
-  stat.nlink.to_s.rjust(max_hardlinks_width)
+def calculate_max_width(files)
+  {
+    max_hardlinks_width: files.map { |file| File.stat(file).nlink.to_s.length }.max,
+    max_user_width: files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max,
+    max_group_width: files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max,
+    max_size_width: files.map { |file| File.stat(file).size.to_s.length }.max
+  }
 end
 
-def make_user(stat, max_user_width)
-  Etc.getpwuid(stat.uid).name.rjust(max_user_width)
-end
-
-def make_group(stat, max_group_width)
-  Etc.getgrgid(stat.gid).name.rjust(max_group_width)
-end
-
-def make_file_size(stat, max_size_width)
-  stat.size.to_s.rjust(max_size_width)
-end
-
-def make_update_file_day(stat)
-  stat.mtime.strftime('%-m月 %e %H:%M')
-end
-
-def execute_file_list_and_total_blocks(files, file_type_hash, permission_hash)
-  max_hardlinks_width = files.map { |file| File.stat(file).nlink.to_s.length }.max
-  max_user_width = files.map { |file| Etc.getpwuid(File.stat(file).uid).name.length }.max
-  max_group_width = files.map { |file| Etc.getgrgid(File.stat(file).gid).name.length }.max
-  max_size_width = files.map { |file| File.stat(file).size.to_s.length }.max
+def display_detailed_format(files, file_type_hash, permission_hash)
+  widths = calculate_max_width(files)
   total_blocks = 0
 
   file_lists = files.map do |file|
     stat = File.stat(file)
     total_blocks += stat.blocks
 
+    hardlinks = stat.nlink.to_s.rjust(widths[:max_hardlinks_width])
+    user = Etc.getpwuid(stat.uid).name.rjust(widths[:max_user_width])
+    group = Etc.getgrgid(stat.gid).name.rjust(widths[:max_group_width])
+    file_size = stat.size.to_s.rjust(widths[:max_size_width])
+    update_file_day = stat.mtime.strftime('%-m月 %e %H:%M')
+
     [
-      make_file_mode_structure(stat, file_type_hash, permission_hash),
-      make_hardlinks(stat, max_hardlinks_width),
-      make_user(stat, max_user_width),
-      make_group(stat, max_group_width),
-      make_file_size(stat, max_size_width),
-      make_update_file_day(stat),
-      file
+      make_file_mode_structure(stat, file_type_hash, permission_hash), hardlinks, user, group, file_size, update_file_day, file
     ].join(' ')
   end
   puts "total #{total_blocks}"
