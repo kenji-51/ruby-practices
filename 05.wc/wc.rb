@@ -23,19 +23,19 @@ if files.empty?
   word_counts = input.split.length
   number_of_bytes = input.bytesize
 
-  multiple_options = []
+  output_counts = []
 
-  multiple_options << number_of_lines.to_s.rjust(6) if l_cmd
-  multiple_options << word_counts.to_s.rjust(6) if w_cmd
-  multiple_options << number_of_bytes.to_s.rjust(6) if c_cmd
+  output_counts << number_of_lines.to_s.rjust(6) if l_cmd
+  output_counts << word_counts.to_s.rjust(6) if w_cmd
+  output_counts << number_of_bytes.to_s.rjust(6) if c_cmd
 
   unless l_cmd || w_cmd || c_cmd
-    multiple_options << number_of_lines.to_s.rjust(6)
-    multiple_options << word_counts.to_s.rjust(6)
-    multiple_options << number_of_bytes.to_s.rjust(6)
+    output_counts << number_of_lines.to_s.rjust(6)
+    output_counts << word_counts.to_s.rjust(6)
+    output_counts << number_of_bytes.to_s.rjust(6)
   end
 
-  puts multiple_options.join
+  puts output_counts.join
 
 else
 
@@ -54,18 +54,18 @@ else
     total_file_word_counts += file_word_counts
     total_file_number_of_bytes += file_number_of_bytes
 
-    multiple_options = []
+    output_counts = []
 
-    multiple_options << file_number_of_lines.to_s.rjust(6) if l_cmd
-    multiple_options << file_word_counts.to_s.rjust(6) if w_cmd
-    multiple_options << file_number_of_bytes.to_s.rjust(6) if c_cmd
+    output_counts << file_number_of_lines.to_s.rjust(6) if l_cmd
+    output_counts << file_word_counts.to_s.rjust(6) if w_cmd
+    output_counts << file_number_of_bytes.to_s.rjust(6) if c_cmd
 
     unless l_cmd || w_cmd || c_cmd
-      multiple_options << file_number_of_lines.to_s.rjust(6)
-      multiple_options << file_word_counts.to_s.rjust(6)
-      multiple_options << file_number_of_bytes.to_s.rjust(6)
+      output_counts << file_number_of_lines.to_s.rjust(6)
+      output_counts << file_word_counts.to_s.rjust(6)
+      output_counts << file_number_of_bytes.to_s.rjust(6)
     end
-    multiple_options.join + " #{file}"
+    output_counts.join + " #{file}"
   end
 
   puts result
