@@ -14,75 +14,70 @@ OptionParser.new do |opt|
 end
 
 files = ARGV
-files_count = files.size
 
-if files.empty?
-  input = $stdin.read
+def count_input_data(input_data)
+  lines = input_data.lines.length
+  words = input_data.split.length
+  bytes = input_data.bytesize
 
-  number_of_lines = input.lines.length
-  word_counts = input.split.length
-  number_of_bytes = input.bytesize
+  {
+    lines: lines,
+    words: words,
+    bytes: bytes
+  }
+end
 
+def format_counts(counts, l_cmd, w_cmd, c_cmd)
   output_counts = []
 
-  output_counts << number_of_lines.to_s.rjust(6) if l_cmd
-  output_counts << word_counts.to_s.rjust(6) if w_cmd
-  output_counts << number_of_bytes.to_s.rjust(6) if c_cmd
+  output_counts << counts[:lines].to_s.rjust(6) if l_cmd
+  output_counts << counts[:words].to_s.rjust(6) if w_cmd
+  output_counts << counts[:bytes].to_s.rjust(6) if c_cmd
 
-  unless l_cmd || w_cmd || c_cmd
-    output_counts << number_of_lines.to_s.rjust(6)
-    output_counts << word_counts.to_s.rjust(6)
-    output_counts << number_of_bytes.to_s.rjust(6)
+  if !l_cmd && !w_cmd && !c_cmd
+    output_counts << counts[:lines].to_s.rjust(6)
+    output_counts << counts[:words].to_s.rjust(6)
+    output_counts << counts[:bytes].to_s.rjust(6)
   end
 
-  puts output_counts.join
+  output_counts.join
+end
 
+if files.empty?
+  input_data = $stdin.read
+
+  counts = count_input_data(input_data)
+  output = format_counts(counts, l_cmd, w_cmd, c_cmd)
+
+  puts output
 else
+  total_lines = 0
+  total_words = 0
+  total_bytes = 0
 
-  total_file_number_of_lines = 0
-  total_file_word_counts = 0
-  total_file_number_of_bytes = 0
+  files.each do |file|
+    input_data = File.read(file)
 
-  result = files.map do |file|
-    reading_file = File.read(file)
+    counts = count_input_data(input_data)
 
-    file_number_of_lines = reading_file.lines.length
-    file_word_counts = reading_file.split.length
-    file_number_of_bytes = reading_file.bytesize
+    total_lines += counts[:lines]
+    total_words += counts[:words]
+    total_bytes += counts[:bytes]
 
-    total_file_number_of_lines += file_number_of_lines
-    total_file_word_counts += file_word_counts
-    total_file_number_of_bytes += file_number_of_bytes
+    output = format_counts(counts, l_cmd, w_cmd, c_cmd)
 
-    output_counts = []
-
-    output_counts << file_number_of_lines.to_s.rjust(6) if l_cmd
-    output_counts << file_word_counts.to_s.rjust(6) if w_cmd
-    output_counts << file_number_of_bytes.to_s.rjust(6) if c_cmd
-
-    unless l_cmd || w_cmd || c_cmd
-      output_counts << file_number_of_lines.to_s.rjust(6)
-      output_counts << file_word_counts.to_s.rjust(6)
-      output_counts << file_number_of_bytes.to_s.rjust(6)
-    end
-    output_counts.join + " #{file}"
+    puts "#{output} #{file}"
   end
 
-  puts result
+  if files.size > 1
+    total_counts = {
+      lines: total_lines,
+      words: total_words,
+      bytes: total_bytes
+    }
 
-  if files_count > 1
-    output_counts = []
+    total_output = format_counts(total_counts, l_cmd, w_cmd, c_cmd)
 
-    output_counts << total_file_number_of_lines.to_s.rjust(6) if l_cmd
-    output_counts << total_file_word_counts.to_s.rjust(6) if w_cmd
-    output_counts << total_file_number_of_bytes.to_s.rjust(6) if c_cmd
-
-    unless l_cmd || w_cmd || c_cmd
-      output_counts << total_file_number_of_lines.to_s.rjust(6)
-      output_counts << total_file_word_counts.to_s.rjust(6)
-      output_counts << total_file_number_of_bytes.to_s.rjust(6)
-    end
-
-    puts "#{output_counts.join} total"
+    puts "#{total_output} total"
   end
 end
