@@ -71,18 +71,18 @@ else
   puts result
 
   if files_count > 1
-    total_options = []
+    output_counts = []
 
-    total_options << total_file_number_of_lines.to_s.rjust(6) if l_cmd
-    total_options << total_file_word_counts.to_s.rjust(6) if w_cmd
-    total_options << total_file_number_of_bytes.to_s.rjust(6) if c_cmd
+    output_counts << total_file_number_of_lines.to_s.rjust(6) if l_cmd
+    output_counts << total_file_word_counts.to_s.rjust(6) if w_cmd
+    output_counts << total_file_number_of_bytes.to_s.rjust(6) if c_cmd
 
     unless l_cmd || w_cmd || c_cmd
-      total_options << total_file_number_of_lines.to_s.rjust(6)
-      total_options << total_file_word_counts.to_s.rjust(6)
-      total_options << total_file_number_of_bytes.to_s.rjust(6)
+      output_counts << total_file_number_of_lines.to_s.rjust(6)
+      output_counts << total_file_word_counts.to_s.rjust(6)
+      output_counts << total_file_number_of_bytes.to_s.rjust(6)
     end
 
-    puts "#{total_options.join} total"
+    puts "#{output_counts.join} total"
   end
 end
