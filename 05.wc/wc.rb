@@ -20,11 +20,7 @@ def count_input_data(input_data)
   words = input_data.split.length
   bytes = input_data.bytesize
 
-  {
-    lines: lines,
-    words: words,
-    bytes: bytes
-  }
+  { lines:, words:, bytes: }
 end
 
 def format_counts(counts, l_cmd, w_cmd, c_cmd)
