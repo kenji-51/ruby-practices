@@ -32,10 +32,14 @@ def format_counts(counts, l_cmd, w_cmd, c_cmd)
     bytes: c_cmd
   }
 
-  no_option = !l_cmd && !w_cmd && !c_cmd
+  if !l_cmd && !w_cmd && !c_cmd
+    options[:lines] = true
+    options[:words] = true
+    options[:bytes] = true
+  end
 
   options.each do |key, value|
-    output_counts << counts[key].to_s.rjust(6) if value || no_option
+    output_counts << counts[key].to_s.rjust(6) if value
   end
 
   output_counts.join
