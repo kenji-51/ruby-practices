@@ -26,14 +26,16 @@ end
 def format_counts(counts, l_cmd, w_cmd, c_cmd)
   output_counts = []
 
-  output_counts << counts[:lines].to_s.rjust(6) if l_cmd
-  output_counts << counts[:words].to_s.rjust(6) if w_cmd
-  output_counts << counts[:bytes].to_s.rjust(6) if c_cmd
+  options = {
+    lines: l_cmd,
+    words: w_cmd,
+    bytes: c_cmd
+  }
 
-  if !l_cmd && !w_cmd && !c_cmd
-    output_counts << counts[:lines].to_s.rjust(6)
-    output_counts << counts[:words].to_s.rjust(6)
-    output_counts << counts[:bytes].to_s.rjust(6)
+  no_option = !l_cmd && !w_cmd && !c_cmd
+
+  options.each do |key, value|
+    output_counts << counts[key].to_s.rjust(6) if value || no_option
   end
 
   output_counts.join
