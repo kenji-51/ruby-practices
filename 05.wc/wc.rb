@@ -32,17 +32,19 @@ def format_counts(counts, l_cmd, w_cmd, c_cmd)
     bytes: c_cmd
   }
 
-  if !l_cmd && !w_cmd && !c_cmd
-    options[:lines] = true
-    options[:words] = true
-    options[:bytes] = true
-  end
+  options = {
+    lines: l_cmd,
+    words: w_cmd,
+    bytes: c_cmd
+  }
 
-  options.each do |key, value|
-    output_counts << counts[key].to_s.rjust(6) if value
-  end
+  options = options.transform_values { true } if options.values.none?
 
-  output_counts.join
+  output_counts << counts[:lines] if options[:lines]
+  output_counts << counts[:words] if options[:words]
+  output_counts << counts[:bytes] if options[:bytes]
+
+  output_counts.join(' ')
 end
 
 if files.empty?
