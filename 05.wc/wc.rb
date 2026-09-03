@@ -53,18 +53,18 @@ if files.empty?
 
   puts output
 else
-  total_lines = 0
-  total_words = 0
-  total_bytes = 0
-
+  total_counts = {
+    lines: 0,
+    words: 0,
+    bytes: 0
+  }
   files.each do |file|
     input_data = File.read(file)
-
     counts = count_input_data(input_data)
 
-    total_lines += counts[:lines]
-    total_words += counts[:words]
-    total_bytes += counts[:bytes]
+    total_counts[:lines] += counts[:lines]
+    total_counts[:words] += counts[:words]
+    total_counts[:bytes] += counts[:bytes]
 
     output = format_counts(counts, l_cmd, w_cmd, c_cmd)
 
@@ -72,12 +72,6 @@ else
   end
 
   if files.size > 1
-    total_counts = {
-      lines: total_lines,
-      words: total_words,
-      bytes: total_bytes
-    }
-
     total_output = format_counts(total_counts, l_cmd, w_cmd, c_cmd)
 
     puts "#{total_output} total"
